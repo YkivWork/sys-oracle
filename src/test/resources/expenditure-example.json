@@ -1,0 +1,35 @@
+{
+  "OutputParameters": {
+    "@xmlns": "http: //xmlns.oracle.com/apps/pa/rest/xxsp_mapping_svc/get_exp_org_mapping/",
+    "X_RESULTS": {
+      "MESSAGE": "3 Rows Returned.",
+      "STATUS": "S"
+    },
+    "X_EXP_ORGS": {
+      "X_EXP_ORGS_ITEM": [
+        {
+          "EXPENDITURE_ORG_ID": "1421",
+          "EXPENDITURE_ORG_NAME": "DATASITE-ST PAUL",
+          "SERVICE_SITE": "STP",
+          "BUSINESS_UNIT": "DATASITE",
+          "TEAM_TYPE": "DATASITE"
+        },
+        {
+          "EXPENDITURE_ORG_ID": "1422",
+          "EXPENDITURE_ORG_NAME": "DATASITE-LONDON",
+          "SERVICE_SITE": "LON",
+          "BUSINESS_UNIT": "DATASITE",
+          "TEAM_TYPE": "DATASITE"
+        },
+        {
+          "EXPENDITURE_ORG_ID": "2096",
+          "EXPENDITURE_ORG_NAME": "DATASITE-HONG KONG",
+          "SERVICE_SITE": "HKG",
+          "BUSINESS_UNIT": "DATASITE",
+          "TEAM_TYPE": "DATASITE"
+        }
+      ]
+    },
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  }
+}

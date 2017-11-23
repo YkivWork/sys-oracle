@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+xmlns:cluster="http://www.mulesoft.org/schema/mule/ee/cluster"
+xmlns:microsoftservicebus="http://www.mulesoft.org/schema/mule/microsoftservicebus"
+xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+xmlns:http="http://www.mulesoft.org/schema/mule/http"
+xmlns:secure-property-placeholder="http://www.mulesoft.org/schema/mule/secure-property-placeholder"
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/microsoftservicebus http://www.mulesoft.org/schema/mule/microsoftservicebus/current/mule-microsoftservicebus.xsd
+http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+
+    <secure-property-placeholder:config name="Secure_Property_Placeholder" key="${runtime.key}" location="properties/common.properties,properties/${mule.env}.properties" doc:name="Secure Property Placeholder"/>
+
+	<http:request-config name="MDR_Request_Configuration"
+		host="${mdr.system.host}" port="${mdr.system.port}" basePath="/"
+		doc:name="MDR_Request_Configuration" responseTimeout="120000"/>
+
+    <http:request-config name="oracleHttpRequestConfiguration"
+		host="${oracle.host}" port="${oracle.port}" basePath="/"
+		doc:name="HTTP Request Configuration" responseTimeout="${response.timeout}">
+        <http:basic-authentication username="${oracle.username}"
+                                   password="${oracle.password}" />
+    </http:request-config>
+
+    <ee:object-store-caching-strategy entryTTL="5000000" name="ExpirableCachingStrategy" doc:name="Caching Strategy" >
+        <in-memory-store name="ExpCachingStrategy" entryTTL="5000000"/>
+    </ee:object-store-caching-strategy>
+	<ee:object-store-caching-strategy name="ProjOrgExpirableCachingStrategy" doc:name="Caching Strategy"/>
+    <ee:object-store-caching-strategy name="lookupInvoiceCachingStrategy" doc:name="Caching Strategy"/>
+	<ee:object-store-caching-strategy
+		entryTTL="600000" name="InvoiceTemplateExpirableCachingStrategy" doc:name="InvoiceTemplateCaching Strategy" />
+
+
+    <objectstore:config partition="expenditurePartition" name="nonPersistentObjectStoreConfig" doc:name="ObjectStore: Connector" />
+
+    <expression-filter expression="#[payload.status == 'S']" name="Oracle_Response_Evaluation" doc:name="Expression"/>
+
+    <http:request-config name="oracle_Auth_HTTP_Request_Configuration" host="${oracle.host}" port="${oracle.port}" responseTimeout="${response.timeout}" doc:name="HTTP Request Configuration">
+        <http:basic-authentication username="${oracle.username}" password="${oracle.password}"/>
+    </http:request-config>
+
+    <configuration defaultExceptionStrategy-ref="global-exception-strategy" doc:name="Configuration">
+        <http:config useTransportForUris="false"/>
+    </configuration>
+
+
+    <http:listener-config name="api-HTTP_Listener_Configuration" protocol="HTTPS" host="0.0.0.0" port="${https.port}" doc:name="HTTP Listener Configuration">
+        <tls:context>
+            <tls:key-store path="sslkeys/${mule.env}-keystore.jks" keyPassword="password" password="password"/>
+        </tls:context>
+    </http:listener-config>
+ 
+</mule>

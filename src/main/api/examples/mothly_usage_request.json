@@ -1,0 +1,12 @@
+{
+  "usages": [
+    {
+      "sfdcProjectId": "abc123",
+      "lineId": "a27c0000005ywr5AAA | 2017 - 09 - 05 | docProcessed",
+      "usageBillingType": "downloadOnly",
+      "expenditureId": "1421",
+      "transactionDate": "2017-09-05",
+      "quantity": "2611"
+    }
+  ]
+}

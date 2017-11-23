@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <sub-flow name="getOracleAccountFlow">
+        <logger message="Flow=getOracleAccountFlow Action=Started" level="INFO" doc:name="Logger"/>
+
+        <flow-ref name="getAuth" doc:name="getAuth"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  GET_CUSTOMERS_Input: {
+    InputParameters: {
+    }
+  }
+}]]></dw:set-payload>
+        </dw:transform-message>
+
+        <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.customer.path}" method="POST" doc:name="HTTP">
+            <http:request-builder>
+                <http:header headerName="Content-Type" value="application/json"/>
+                <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+            </http:request-builder>
+        </http:request>
+
+        <logger message="This Is Temporary - Remove This #[message.payloadAs(java.lang.String)]" level="DEBUG" category="com.merrillcorp.logging"/>
+
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+
+//Oracle returns an object or an array depending upon
+//how many items need to be return, so we check and convert as needed.
+//We want to always treat them as arrays
+%function turnIntoArray(item) [] when item == null otherwise item when item is :array otherwise [item]
+
+%var customers = turnIntoArray(payload.OutputParameters.X_CUSTOMERS.X_CUSTOMERS_ITEM)
+
+%function detectWeirdNulls(value) null when value == null or value["@xsi:nil"] == "true"
+  otherwise value
+---
+{
+  customers: customers map
+  using (item = ($ default {}) mapObject { ($$): detectWeirdNulls($) })
+  using (addresses = turnIntoArray(item.CUST_ACCT_SITES.CUST_ACCT_SITES_ITEM)) {
+
+    accountId: item.CUST_ACCOUNT_ID,
+    name: item.CUSTOMER_NAME,
+    number: item.CUSTOMER_NUMBER,
+    status: item.CUSTOMER_STATUS,
+    taxNumber: item.TAX_REFERENCE,
+
+    accountSites: addresses map
+      using (item = ($ default {}) mapObject { ($$): detectWeirdNulls($) } ) {
+        accountSiteId: item.CUST_ACCT_SITE_ID,
+        address1: item.ADDRESS1,
+        address2: item.ADDRESS2,
+        address3: item.ADDRESS3,
+        city: item.CITY,
+        county: item.COUNTY,
+        state: item.STATE,
+        province: item.PROVINCE,
+        postalCode: item.POSTAL_CODE,
+        country: item.COUNTRY,
+        operatingUnitName: item.OPERATING_UNIT_NAME,
+        status: item.SITE_STATUS
+    }
+  }
+}
+]]></dw:set-payload>
+        </dw:transform-message>
+
+        <logger message="Flow=getOracleAccountFlow Action=Completed" level="INFO" doc:name="Logger"/>
+
+    </sub-flow>
+</mule>

@@ -1,0 +1,57 @@
+{
+  "OutputParameters" : {
+    "@xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns" : "http://xmlns.oracle.com/apps/hz/rest/xxhz_customer_svc/get_customers/",
+    "X_CUSTOMERS" : {
+      "X_CUSTOMERS_ITEM" : {
+        "CUST_ACCOUNT_ID" : "1430",
+        "CUSTOMER_NAME" : "Casino Data Systems",
+        "CUSTOMER_NUMBER" : "1410",
+        "CUSTOMER_STATUS" : "A",
+        "TAX_REFERENCE" : {
+          "@xsi:nil" : "true"
+        },
+        "CUST_ACCT_SITES" : {
+          "CUST_ACCT_SITES_ITEM" : [ {
+            "CUST_ACCT_SITE_ID" : "6528",
+            "ADDRESS1" : "3265 W. Tompkins",
+            "ADDRESS2" : "xx",
+            "ADDRESS3" : {
+              "@xsi:nil" : "true"
+            },
+            "CITY" : "Las Vegas",
+            "COUNTY" : "Clark",
+            "STATE" : "NV",
+            "PROVINCE" : {
+              "@xsi:nil" : "true"
+            },
+            "POSTAL_CODE" : "89103",
+            "COUNTRY" : "US",
+            "OPERATING_UNIT_NAME" : "US_OU-MERRILL CORPORATION",
+            "SITE_STATUS" : "A"
+          }, {
+            "CUST_ACCT_SITE_ID" : "8977",
+            "ADDRESS1" : "3300 Birtcher Drive",
+            "ADDRESS2" : {
+              "@xsi:nil" : "true"
+            },
+            "ADDRESS3" : {
+              "@xsi:nil" : "true"
+            },
+            "CITY" : "Las Vegas",
+            "COUNTY" : "Clark",
+            "STATE" : "NV",
+            "PROVINCE" : {
+              "@xsi:nil" : "true"
+            },
+            "POSTAL_CODE" : "89118",
+            "COUNTRY" : "US",
+            "OPERATING_UNIT_NAME" : "US_OU-MERRILL CORPORATION",
+            "SITE_STATUS" : "A"
+          } ]
+        }
+      }
+    },
+    "X_MSG_LIST" : null
+  }
+}

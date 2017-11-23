@@ -1,0 +1,49 @@
+{
+  "OutputParameters": {
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns": "http://xmlns.oracle.com/apps/pa/rest/xxsp_mapping_svc/salesreps/",
+    "X_SALESREPS": {
+      "X_SALESREPS_ITEM": [
+        {
+          "SALESREP_ID": "-3",
+          "EMPLOYEE_NUMBER": "999999",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000023",
+          "EMPLOYEE_NUMBER": "4417",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000025",
+          "EMPLOYEE_NUMBER": "6803",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000026",
+          "EMPLOYEE_NUMBER": "6703",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000030",
+          "EMPLOYEE_NUMBER": "4943",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000031",
+          "EMPLOYEE_NUMBER": "4577",
+          "OPERATING_UNIT_ID": "21"
+        },
+        {
+          "SALESREP_ID": "100000032",
+          "EMPLOYEE_NUMBER": "9857",
+          "OPERATING_UNIT_ID": "21"
+        }
+      ]
+    },
+    "X_RESULTS": {
+      "STATUS": "S",
+      "MESSAGE": "647 Rows Returned."
+    }
+  }
+}

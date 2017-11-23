@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+    <flow name="invoiceTemplateLookup" processingStrategy="synchronous">
+        <logger message="Start invoiceTemplateLookup Flow" level="INFO" doc:name="Logger"/>
+
+        <flow-ref name="getAuth" doc:name="getAuth"/>
+        <ee:cache cachingStrategy-ref="InvoiceTemplateExpirableCachingStrategy" doc:name="Cache">
+            <dw:transform-message doc:name="Set Payload To Get Invoice Template Mapping">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  GET_INVOICE_TEMPLATE_MAPPING_Input: {
+    InputParameters: {}
+  }
+}]]></dw:set-payload>
+            </dw:transform-message>
+            <set-session-variable variableName="payloadBeforeUntilSuccess" value="#[payload]" doc:name="setPayloadBeforeUntilSuccess"/>
+            <until-successful maxRetries="${oracle.http.max.retries}" millisBetweenRetries="${oracle.http.milliSecondsBetweenRetries}" failureExpression="exception!=null &amp;&amp; (exception.causedBy(java.io.IOException) || exception.causedBy(java.net.ConnectException)  || exception.causedBy(java.net.SocketTimeoutException))" synchronous="true" doc:name="UntilSuccessfulForInvoiceCreation">
+                <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.invoiceTemplateMapping.path}" method="POST" doc:name="GetInvoiceTemplateMapping">
+                    <http:request-builder>
+                        <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+                    </http:request-builder>
+                    <http:success-status-code-validator values="0..599"/>
+                </http:request>
+            </until-successful>
+            <dw:transform-message doc:name="Parse Invoice Template Mapping">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload.OutputParameters.X_INV_TEMPL_MAP.X_INV_TEMPL_MAP_ITEM]]></dw:set-payload>
+            </dw:transform-message>
+        </ee:cache>
+        <logger message="End invoiceTemplateLookup Flow" level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    
+</mule>

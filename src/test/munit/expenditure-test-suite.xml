@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:mock="http://www.mulesoft.org/schema/mule/mock"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:core="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd">
+    <munit:config name="munit" doc:name="MUnit configuration"/>
+    <spring:beans>
+        <spring:import resource="classpath:expenditure.xml"/>
+        <spring:import resource="classpath:globals.xml"/>
+        <spring:import resource="classpath:auth.xml"/>
+        <spring:import resource="classpath:error-handling.xml"/>
+    </spring:beans>
+    <munit:test name="getExpenditureReturnsFoundId" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return mimeType="application/xml" payload="#[]"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('expenditure-example.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+
+        <set-variable variableName="businessUnit" value="DATASITE" doc:name="Variable"/>
+        <set-variable variableName="serviceSite" value="STP" doc:name="Variable"/>
+        <set-variable variableName="teamType" value="DATASITE" doc:name="Variable"/>
+
+        <flow-ref name="getExpenditure" doc:name="getExpenditure"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals expectedValue="#[1421]" actualValue="#[payload.expenditureId]" doc:name="Assert Equals"/>
+    </munit:test>
+
+    <munit:test name="getExpenditureDoesNotFindId" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return  mimeType="application/xml" payload="#[]"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('expenditure-example.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+        <set-variable variableName="businessUnit" value="NOT FOUND" doc:name="Variable"/>
+        <set-variable variableName="serviceSite" value="NOT FOUND" doc:name="Variable"/>
+        <set-variable variableName="teamType" value="NOT FOUND" doc:name="Variable"/>
+
+        <flow-ref name="getExpenditure" doc:name="getExpenditure"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals expectedValue="Expenditure Not Found" actualValue="#[payload.message]" doc:name="Assert Equals"/>
+        <munit:assert-on-equals expectedValue="#[404]" actualValue="#[flowVars.http.status]" doc:name="Assert Equals"/>
+    </munit:test>
+</mule>

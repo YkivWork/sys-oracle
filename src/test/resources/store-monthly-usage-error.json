@@ -1,0 +1,31 @@
+{
+  "OutputParameters": {
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns": "http://xmlns.oracle.com/apps/pa/rest/xxpa_project_svc/load_pa_txn_intf_items/",
+    "P_RESULTS": {
+      "STATUS": "E",
+      "MESSAGES": {
+        "MESSAGES_ITEM": [
+          {
+            "SEVERITY_LEVEL": "ERR",
+            "CODE": "155",
+            "ENTITY": "EXP_ITEM",
+            "KEY_MAPPING": "ProjNum|ExpItemID",
+            "KEY_VALUES": "LM-TEST-124|LM-TEST-124|2017-06-11|docProcessed",
+            "INVALID_VALUE": "LM-TEST-124|2017-06-11|docProcessed",
+            "MESSAGE": "Duplicate Expenditure Item"
+          },
+          {
+            "SEVERITY_LEVEL": "ERR",
+            "CODE": "155",
+            "ENTITY": "EXP_ITEM",
+            "KEY_MAPPING": "ProjNum|ExpItemID",
+            "KEY_VALUES": "LM-TEST-124|LM-TEST-124|2017-06-12|docProcessed",
+            "INVALID_VALUE": "LM-TEST-124|2017-06-12|docProcessed",
+            "MESSAGE": "Duplicate Expenditure Item"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <flow name="invoiceCreateCreditMemoFlow">
+        <logger message="Flow=invoiceCreateCreditMemoFlow Action=Started" level="INFO" doc:name="Logger"/>
+        <flow-ref name="getAuth" doc:name="getAuth"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{ 
+  "REVERSE_INVOICE_Input": {  
+    "InputParameters": { 
+        "P_SOURCE_SYSTEM": "XXARIA", 
+        "P_PARENT_SOURCE_INVOICE_NUMBER":flowVars.originalInvoiceNumber, 
+        "P_SOURCE_INVOICE_NUMBER": flowVars.originalCMNumber   
+  } 
+  }
+  }]]></dw:set-payload>
+        </dw:transform-message>
+        <until-successful maxRetries="${oracle.http.max.retries}" millisBetweenRetries="${oracle.http.milliSecondsBetweenRetries}" failureExpression="exception!=null &amp;&amp; (exception.causedBy(java.io.IOException) || exception.causedBy(java.net.ConnectException)  || exception.causedBy(java.net.SocketTimeoutException))" synchronous="true" doc:name="UntilSuccessfulForInvoiceCreation">
+            <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.reverseInvoice.path}" method="POST" doc:name="CreateCreditMemo">
+                <http:request-builder>
+                    <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+                </http:request-builder>
+                <http:success-status-code-validator values="0..599"/>
+            </http:request>
+        </until-successful>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger with Payload"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data\empty_1.xml"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload]]></dw:set-payload>
+            <dw:set-variable variableName="extractMsg"><![CDATA[%dw 1.0
+%output application/java
+---
+payload.OutputParameters.P_RESULTS.STATUS as :string]]></dw:set-variable>
+        </dw:transform-message>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.extractMsg == 'S']">
+                <set-property propertyName="http.status" value="200" doc:name="Set Success Status"/>
+            </when>
+            <when expression="#[flowVars.extractMsg == 'E']">
+                <set-property propertyName="http.status" value="200" doc:name="Set Failure Status"/>
+            </when>
+            <otherwise>
+                <set-property propertyName="http.status" value="400" doc:name="Set Error Status"/>
+            </otherwise>
+        </choice>
+        <logger message="Flow=invoiceCreateCreditMemoFlow Action=Completed" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

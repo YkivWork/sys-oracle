@@ -1,0 +1,22 @@
+{
+  "OutputParameters": {
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns": "http://xmlns.oracle.com/apps/pa/rest/xxpa_project_svc/load_pa_txn_intf_items/",
+    "P_RESULTS": {
+      "STATUS": "S",
+      "MESSAGES": {
+        "MESSAGES_ITEM": {
+          "SEVERITY_LEVEL": "INFO",
+          "CODE": "0",
+          "ENTITY": "EXP_ITEM",
+          "KEY_MAPPING": "ProjNum|ExpItemID",
+          "KEY_VALUES": "031-LM-TEST-124",
+          "INVALID_VALUE": {
+            "@xsi:nil": "true"
+          },
+          "MESSAGE": "Successfully completed Expenditure Items: 2"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "CREATE_PROJECT_Input": {
+    "RESTHeader": {
+      "Responsibility": "XXISG_PA"
+    },
+    "InputParameters": {
+      "P_PROJECT": {
+        "SOURCE_SYSTEM": "XXSF",
+        "SOURCE_PROJECT_NUMBER": "a27c0000005RQfpAAG",
+        "PROJECT_NAME": "Test Project Aug 11",
+        "DESCRIPTION": "Test Project Aug 11",
+        "PROJECT_START_DATE": "2017-08-11",
+        "OPERATING_UNIT_ID": "21",
+        "PRODUCT_TYPE": "DATASITE-DOWNLOADONLY",
+        "ORGANIZATION_ID": 1420,
+        "BILLABLE": "Y"
+      }
+    }
+  }
+}

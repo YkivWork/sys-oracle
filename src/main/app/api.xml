@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+    <http:listener-config name="api-httpListenerConfig" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"/>
+    <flow name="api-main">
+        <http:listener config-ref="api-HTTP_Listener_Configuration" path="/api/*" doc:name="HTTP"/>
+        <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
+
+    </flow>
+    <flow name="api-console">
+        <http:listener config-ref="api-HTTP_Listener_Configuration" path="/console/*" doc:name="HTTP"/>
+        <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
+    </flow>
+    <flow name="get:/oracle/create-credit-memo:api-config">
+        <set-variable variableName="originalInvoiceNumber" value="#[message.inboundProperties.'http.query.params'.originalInvoiceNumber]" doc:name="originalInvoiceNumber"/>
+        <set-variable variableName="originalCMNumber" value="#[message.inboundProperties.'http.query.params'.originalCMNumber]" doc:name="originalCMNumber"/>
+        <flow-ref name="invoiceCreateCreditMemoFlow" doc:name="invoiceCreateCreditMemoFlow"/>
+
+    </flow>
+    <flow name="get:/oracle/expenditure:api-config">
+        <set-variable variableName="businessUnit" value="#[message.inboundProperties.'http.query.params'.businessUnit]" doc:name="businessUnit"/>
+        <set-variable variableName="serviceSite" value="#[message.inboundProperties.'http.query.params'.serviceSite]" doc:name="serviceSite"/>
+        <set-variable variableName="teamType" value="#[message.inboundProperties.'http.query.params'.teamType]" doc:name="teamType"/>
+        <flow-ref name="getExpenditure" doc:name="getExpenditure"/>
+
+    </flow>
+    <flow name="get:/oracle/mapping-table-lookup:api-config">
+        <flow-ref name="invoiceMappingTableLookup" doc:name="invoiceMappingTableLookup"/>
+
+    </flow>
+    <flow name="get:/oracle/template-lookup:api-config">
+        <flow-ref name="invoiceTemplateLookup" doc:name="invoiceTemplateLookup"/>
+
+    </flow>
+    <flow name="get:/oracle/oracle-account:api-config">
+        <flow-ref name="getOracleAccountFlow" doc:name="getOracleAccountFlow"/>
+
+    </flow>
+    <flow name="get:/oracle/auth:api-config">
+        <flow-ref name="getAuth" doc:name="getAuth"/>
+
+    </flow>
+    <flow name="get:/oracle/healthcheck:api-config">
+        <flow-ref name="healthCheckFlow" doc:name="healthCheckFlow"/>
+
+    </flow>
+    <flow name="get:/oracle/org-lookup:api-config">
+        <flow-ref name="projectOrgLookup" doc:name="projectOrgLookup"/>
+
+    </flow>
+    <flow name="get:/oracle/salesrep-lookup:api-config">
+        <set-variable variableName="operationId" value="#[message.inboundProperties.'http.query.params'.operationId]" doc:name="operationId"/>
+        <flow-ref name="salesrepLookup" doc:name="salesrepLookup"/>
+
+    </flow>
+    <flow name="get:/oracle/void-credit-memo:api-config">
+        <set-variable variableName="originalInvoiceNumber" value="#[message.inboundProperties.'http.query.params'.originalInvoiceNumber]" doc:name="originalInvoiceNumber"/>
+        <flow-ref name="invoiceVoidCreditMemoFlow" doc:name="invoiceVoidCreditMemoFlow"/>
+
+    </flow>
+    <flow name="get:/oracle/void-invoice:api-config">
+        <set-variable variableName="originalVoidNumber" value="#[message.inboundProperties.'http.query.params'.originalVoidNumber]" doc:name="originalVoidNumber"/>
+        <flow-ref name="invoiceVoid" doc:name="invoiceVoid"/>
+
+    </flow>
+    <flow name="post:/oracle/create-invoice:api-config">
+        <flow-ref name="invoiceCreate" doc:name="invoiceCreate"/>
+
+    </flow>
+    <flow name="post:/oracle/project-create:api-config">
+        <flow-ref name="projectCreateFlow" doc:name="projectCreateFlow"/>
+
+    </flow>
+    <flow name="post:/oracle/project-update:api-config">
+        <flow-ref name="projectUpdateFlow" doc:name="projectUpdateFlow"/>
+
+    </flow>
+    <flow name="post:/oracle/monthly-usage:api-config">
+        <flow-ref name="sendMonthlyUsageToOracleFlow" doc:name="sendMonthlyUsageToOracleFlow"/>
+    </flow>
+    <flow name="post:/oracle/store-invoice:api-config">
+        <flow-ref name="storeFinalInvoice" doc:name="storeFinalInvoice"/>
+    </flow>
+
+</mule>

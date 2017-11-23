@@ -1,0 +1,21 @@
+{
+  "OutputParameters" : {
+    "@xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns" : "http://xmlns.oracle.com/apps/pa/rest/xxpa_project_svc/create_project/",
+    "P_RESULTS" : {
+      "PROJECT_NUMBER" : "a27c0000005RQfpAAG",
+      "STATUS" : "S",
+      "MESSAGES" : {
+        "MESSAGES_ITEM" : {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "108",
+          "ENTITY" : "PROJECT",
+          "KEY_MAPPING" : "ProjNum",
+          "KEY_VALUES" : "a27c0000005RQfpAAG",
+          "INVALID_VALUE" : "a27c0000005RQfpAAG",
+          "MESSAGE" : "Successfully completed Project created successfully"
+        }
+      }
+    }
+  }
+}

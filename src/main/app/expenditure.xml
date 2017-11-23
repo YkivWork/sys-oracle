@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<flow name="getExpenditure">
+        <logger message="Flow=getExpenditure Action=Started" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+
+		<set-variable variableName="expenditureKey" value="#[flowVars.businessUnit + flowVars.serviceSite + flowVars.teamType]" doc:name="expenditureKey" />
+
+		<objectstore:retrieve config-ref="nonPersistentObjectStoreConfig" key="#[flowVars.expenditureKey]" defaultValue-ref="#[false]" doc:name="ObjectStore"/>
+
+		<choice doc:name="Choice">
+			<when expression="#[payload == false]">
+				<logger message="Method=RetrieveExpenditure Result=NotFoundInObjectStore" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+
+				<flow-ref name="loadExpenditure" doc:name="loadExpenditure" />
+
+				<logger message="Method=RetrieveExpenditure Action=LookupAgain" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+
+				<objectstore:retrieve config-ref="nonPersistentObjectStoreConfig" key="#[flowVars.expenditureKey]" defaultValue-ref="#[false]" doc:name="ObjectStore"/>
+
+				<choice doc:name="Choice">
+					<when expression="#[payload == false]">
+						<logger message="Method=RetrieveExpenditure Result=NotFound" level="WARN" category="com.merrillcorp.logging" doc:name="Logger"/>
+					</when>
+					<otherwise>
+						<logger message="Flow=getExpenditure Result=FoundInObjectStore" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+					</otherwise>
+				</choice>
+			</when>
+            <otherwise>
+				<logger message="Flow=getExpenditure Result=FoundInObjectStore" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+
+        <choice doc:name="Choice">
+			<when expression="#[payload != false]">
+				<set-payload value="{ &quot;expenditureId&quot;: #[payload] }" mimeType="application/json" doc:name="Set Payload"/>
+			</when>
+			<otherwise>
+				<set-payload value="{ &quot;message&quot;: &quot;Expenditure Not Found&quot; }" mimeType="application/json" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="404" doc:name="Not Found"/>
+			</otherwise>
+		</choice>
+
+		<logger message="Flow=getExpenditure Action=Completed" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+	</flow>
+
+	<sub-flow name="loadExpenditure">
+        <logger message="Flow=loadExpenditure Action=Started" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+
+		<flow-ref name="getAuth" doc:name="getAuth" />
+
+		<dw:transform-message doc:name="Transform">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  GET_EXP_ORG_MAPPING_Input: {
+     InputParameters: {}
+  }
+}]]></dw:set-payload>
+		</dw:transform-message>
+
+		<logger message="System=Oracle Method=Expenditure Action=Request" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.exp.org.mapping.path}" method="POST" doc:name="getExpenditureOrgIdFromOracle">
+            <http:request-builder>
+                <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+                <http:header headerName="Content-Type" value="application/json"/>
+            </http:request-builder>
+        </http:request>
+		<logger message="System=Oracle Method=Expenditure Action=Response" level="INFO" doc:name="Logger"/>
+
+		<dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+payload.OutputParameters.X_EXP_ORGS.X_EXP_ORGS_ITEM map ((xEXPORGSITEM , indexOfXEXPORGSITEM) -> {
+	businessUnit: xEXPORGSITEM.BUSINESS_UNIT,
+	expenditureId: xEXPORGSITEM.EXPENDITURE_ORG_ID,
+	serviceSite: xEXPORGSITEM.SERVICE_SITE,
+	teamType: xEXPORGSITEM.TEAM_TYPE
+})
+]]></dw:set-payload>
+		</dw:transform-message>
+
+		<foreach doc:name="For Each">
+			<objectstore:store config-ref="nonPersistentObjectStoreConfig" key="#[payload.businessUnit + payload.serviceSite + payload.teamType]" value-ref="#[payload.expenditureId]" overwrite="true" doc:name="ObjectStore" />
+		</foreach>
+
+		<logger message="Flow=loadExpenditure Action=Completed" level="INFO" category="com.merrillcorp.logging" doc:name="Logger"/>
+	</sub-flow>
+
+</mule>

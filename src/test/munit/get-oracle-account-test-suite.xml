@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mock="http://www.mulesoft.org/schema/mule/mock" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd">
+    <munit:config name="munit" doc:name="MUnit configuration"/>
+    <spring:beans>
+        <spring:import resource="classpath:get-oracle-account.xml"/>
+        <spring:import resource="classpath:auth.xml"/>
+        <spring:import resource="classpath:globals.xml"/>
+        <spring:import resource="classpath:error-handling.xml"/>
+    </spring:beans>
+    <munit:test name="getOracleAccountHandlesSingleElement" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[]" mimeType="application/java"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('oracle-account-response-single.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+
+        <flow-ref name="getOracleAccountFlow" doc:name="getOracleAccountFlow"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals message="customer size is invalid" expectedValue="#[1]" actualValue="#[payload.customers.size()]" doc:name="Assert Equals"/>
+    </munit:test>
+
+    <munit:test name="getOracleAccountHandlesMultiple" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[]" mimeType="application/java"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('oracle-account-response-many.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+
+        <flow-ref name="getOracleAccountFlow" doc:name="getOracleAccountFlow"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals message="customer size is invalid" expectedValue="#[2]" actualValue="#[payload.customers.size()]" doc:name="Assert Equals"/>
+    </munit:test>
+
+    <munit:test name="getOracleAccountHandlesNulls" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[]" mimeType="application/java"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('oracle-account-response-nulls.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+
+        <flow-ref name="getOracleAccountFlow" doc:name="getOracleAccountFlow"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals message="customer size is invalid" expectedValue="#[0]" actualValue="#[payload.customers.size()]" doc:name="Assert Equals"/>
+    </munit:test>
+
+    <munit:test name="getOracleAccountHandlesNullsTakeTwo" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[]" mimeType="application/java"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('oracle-account-response-nulls2.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+
+        <flow-ref name="getOracleAccountFlow" doc:name="getOracleAccountFlow"/>
+
+        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+
+        <munit:assert-on-equals message="customer size is invalid" expectedValue="#[1]" actualValue="#[payload.customers.size()]" doc:name="Assert Equals"/>
+    </munit:test>
+</mule>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+    <flow name="salesrepLookup">
+        <logger message="Start salesrepLookup Flow" level="INFO" doc:name="Logger"/>
+
+		<flow-ref name="getAuth" doc:name="getAuth"/>
+
+		<dw:transform-message doc:name="createJsonCallForSALESREP_Input">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  SALESREP_Input: {
+    InputParameters: {
+      P_IN_SALESREP_REC: {
+        OPERATING_UNIT_ID: flowVars.operationId
+      }
+    }
+  }
+}]]></dw:set-payload>
+		</dw:transform-message>
+
+        <until-successful maxRetries="${oracle.http.max.retries}" millisBetweenRetries="${oracle.http.milliSecondsBetweenRetries}" failureExpression="exception!=null &amp;&amp; (exception.causedBy(java.io.IOException) || exception.causedBy(java.net.ConnectException)  || exception.causedBy(java.net.SocketTimeoutException))" synchronous="true" doc:name="UntilSuccessfulForInvoiceCreation">
+            <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.salesreps.path}" method="POST" doc:name="getSalesRepIdsFromOracle">
+                <http:request-builder>
+                    <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+                    <http:header headerName="Content-Type" value="application/json"/>
+                </http:request-builder>
+                <http:success-status-code-validator values="0..599"/>
+            </http:request>
+        </until-successful>
+        <object-to-string-transformer doc:name="Object to String"/>
+
+		<dw:transform-message doc:name="extractSalesIdOpIdAndEmployeeId">
+			<dw:input-payload mimeType="application/json" />
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload.OutputParameters.X_SALESREPS.X_SALESREPS_ITEM map {
+	salesId: $.SALESREP_ID,
+	operationId: $.OPERATING_UNIT_ID,
+	employeeId: $.EMPLOYEE_NUMBER
+}
+]]></dw:set-payload>
+		</dw:transform-message>
+        <logger message="End salesrepLookup Flow" level="INFO" doc:name="Logger"/>
+
+    </flow>
+
+</mule>

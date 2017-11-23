@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <flow name="sendMonthlyUsageToOracleFlow">
+
+        <logger message="Flow=sendMonthlyUsageToOracleFlow Action=Started" level="INFO" doc:name="Logger"/>
+
+        <enricher target="variable:oracleAuth" doc:name="Message Enricher">
+            <flow-ref name="getAuth" doc:name="getAuth"/>
+        </enricher>
+
+        <dw:transform-message doc:name="BuildMonthlyUsageInputForOracle">
+            <dw:set-payload resource="classpath:dataweave/monthlyUsage.dwl"/>
+        </dw:transform-message>
+
+        <logger message="System=Oracle Method=MonthlyUsage Action=Request" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="oracleHttpRequestConfiguration" path="${oracle.monthlyUsageBatch.path}" method="POST" doc:name="SendMonthlyUsageToOracle">
+            <http:request-builder>
+                <http:header headerName="Cookie" value="#[flowVars.oracleAuth.tokenName + '=' + flowVars.oracleAuth.accessToken]"/>
+            </http:request-builder>
+        </http:request>
+        <logger message="System=Oracle Method=MonthlyUsage Action=Response" level="INFO" doc:name="Logger"/>
+
+
+        <dw:transform-message doc:name="BuildMonthlyUsageInputForOracle">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+
+%var status = payload.OutputParameters.P_RESULTS.STATUS
+%var messages = payload.OutputParameters.P_RESULTS.MESSAGES
+
+%var successful = status == 'S'
+
+%var message = messages.MESSAGES_ITEM.MESSAGE when messages.MESSAGES_ITEM is :object otherwise messages.MESSAGES_ITEM[0].MESSAGE
+---
+{
+  success: successful,
+  (message: message) when successful,
+  (error: message) when not successful
+}
+]]></dw:set-payload>
+        </dw:transform-message>
+
+        <choice>
+            <when expression="#[payload.success]">
+                <set-property propertyName="http.status" value="200" doc:name="Set Success Status"/>
+            </when>
+            <otherwise>
+                <set-property propertyName="http.status" value="400" doc:name="Set Error Status"/>
+            </otherwise>
+        </choice>
+        <logger message="Flow=sendMonthlyUsageToOracleFlow Action=Started" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

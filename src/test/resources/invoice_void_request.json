@@ -1,0 +1,9 @@
+{
+  "REVERSE_INVOICE_Input": {
+    "InputParameters": {
+      "P_SOURCE_SYSTEM": "XXARIA",
+      "P_PARENT_SOURCE_INVOICE_NUMBER": "6957257",
+      "P_SOURCE_PROJECT_NUMBER": ""
+    }
+  }
+}

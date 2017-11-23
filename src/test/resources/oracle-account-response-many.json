@@ -1,0 +1,69 @@
+{
+  "OutputParameters": {
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns": "http://xmlns.oracle.com/apps/hz/rest/xxhz_customer_svc/get_customers/",
+    "X_CUSTOMERS": {
+      "X_CUSTOMERS_ITEM": [
+        {
+          "CUST_ACCOUNT_ID": "94287",
+          "CUSTOMER_NAME": "Tom Cat Bakery, Inc.",
+          "CUSTOMER_NUMBER": "81875",
+          "CUSTOMER_STATUS": "A",
+          "TAX_REFERENCE": {
+            "@xsi:nil": "true"
+          },
+          "CUST_ACCT_SITES": {
+            "CUST_ACCT_SITES_ITEM": {
+              "CUST_ACCT_SITE_ID": "89407",
+              "ADDRESS1": "43-05 Tenth Street",
+              "ADDRESS2": "x",
+              "ADDRESS3": {
+                "@xsi:nil": "true"
+              },
+              "CITY": "Long Island City",
+              "COUNTY": "Queens",
+              "STATE": "NY",
+              "PROVINCE": {
+                "@xsi:nil": "true"
+              },
+              "POSTAL_CODE": "11101",
+              "COUNTRY": "US",
+              "OPERATING_UNIT_NAME": "US_OU-MERRILL CORPORATION",
+              "SITE_STATUS": "A"
+            }
+          }
+        },
+        {
+          "CUST_ACCOUNT_ID": "562887",
+          "CUSTOMER_NAME": "Chad Inderman",
+          "CUSTOMER_NUMBER": "159034",
+          "CUSTOMER_STATUS": "A",
+          "TAX_REFERENCE": {
+            "@xsi:nil": "true"
+          },
+          "CUST_ACCT_SITES": {
+            "CUST_ACCT_SITES_ITEM": {
+              "CUST_ACCT_SITE_ID": "172959",
+              "ADDRESS1": "1302 Texas Ave",
+              "ADDRESS2": "x",
+              "ADDRESS3": {
+                "@xsi:nil": "true"
+              },
+              "CITY": "Lubbock",
+              "COUNTY": "Lubbock",
+              "STATE": "TX",
+              "PROVINCE": {
+                "@xsi:nil": "true"
+              },
+              "POSTAL_CODE": "79401-4034",
+              "COUNTRY": "US",
+              "OPERATING_UNIT_NAME": "US_OU-MERRILL CORPORATION",
+              "SITE_STATUS": "A"
+            }
+          }
+        }
+      ]
+    },
+    "X_MSG_LIST": null
+  }
+}

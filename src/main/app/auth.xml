@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+xmlns="http://www.mulesoft.org/schema/mule/core"
+xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+    <flow name="getAuth">
+        <logger message="Flow=getAuth Action=Started" level="INFO" doc:name="Logger"/>
+        <set-payload value="#[&quot;&quot;]" doc:name="Set Payload"/>
+        <set-variable variableName="initVar" value="#[new java.util.ArrayList()]" doc:name="Variable"/>
+        <enricher target="variable:oracleAuth" doc:name="Message Enricher">
+            <ee:cache cachingStrategy-ref="ExpirableCachingStrategy" doc:name="Cache">
+                <logger message="System=Oracle Method=Auth Action=Request" level="INFO" doc:name="Logger"/>
+                <set-session-variable variableName="payloadBeforeUntilSuccess" value="#[payload]" doc:name="setPayloadBeforeUntilSuccess"/>
+                <until-successful maxRetries="${oracle.http.max.retries}" millisBetweenRetries="${oracle.http.milliSecondsBetweenRetries}" failureExpression="exception!=null &amp;&amp; (exception.causedBy(java.io.IOException) || exception.causedBy(java.net.ConnectException)  || exception.causedBy(java.net.SocketTimeoutException))" synchronous="true" doc:name="UntilSuccessfulForInvoiceDetails">
+                    <http:request config-ref="oracle_Auth_HTTP_Request_Configuration" path="${oracle.auth.path}" method="GET" doc:name="Oracle Get Token"/>
+                </until-successful>
+                <logger message="System=Oracle Method=Auth Action=Response" level="INFO" doc:name="Logger"/>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+  accessToken: payload.data.accessToken,
+  tokenName: payload.data.accessTokenName
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <expression-component doc:name="Expression"><![CDATA[#[flowVars.initVar.add(payload)]]]></expression-component>
+                <set-variable variableName="oracleAuth" value="#[payload]" doc:name="oracleAuth"/>
+                <logger message="Flow=getAuth Action=Completed" level="INFO" doc:name="Logger"/>
+            </ee:cache>
+        </enricher>
+        <set-payload value="#[flowVars.initVar]" doc:name="Set Payload"/>
+    </flow>
+
+</mule>

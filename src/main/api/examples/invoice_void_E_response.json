@@ -1,0 +1,25 @@
+{
+  "OutputParameters" : {
+    "@xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns" : "http://xmlns.oracle.com/apps/ar/rest/xxbs_invoice_svc/reverse_invoice/",
+    "P_RESULTS" : {
+      "TRX_NUMBER" : {
+        "@xsi:nil" : "true"
+      },
+      "STATUS" : "E",
+      "MESSAGES" : {
+        "MESSAGES_ITEM" : {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "126",
+          "ENTITY" : "INVOICE",
+          "KEY_MAPPING" : "InvNum",
+          "KEY_VALUES" : {
+            "@xsi:nil" : "true"
+          },
+          "INVALID_VALUE" : "6957257",
+          "MESSAGE" : "Parent invoice number does not exist"
+        }
+      }
+    }
+  }
+}

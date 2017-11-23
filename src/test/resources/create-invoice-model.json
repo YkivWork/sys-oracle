@@ -1,0 +1,119 @@
+{
+  "invoiceNumber": "9934451",
+  "originalInvoiceNumber": null,
+  "projectNumber": "a270U0000004DDkQAM",
+  "description": "MS Test Sept 11 Create 1",
+  "invoiceDate": "2017-09-14",
+  "contact": {
+    "firstName": "Test",
+    "lastName": "Test",
+    "email": "test@gmail.com"
+  },
+  "billingSystemAddressId": "192902",
+  "currencyCode": "USD",
+  "countryOfIssuer": "US",
+  "contractTerm": "3.0",
+  "orderNumber": "po",
+
+  "salesReps": [
+    {
+      "id": "100008931",
+      "splitPercentage": "50.0",
+      "isPrimary": true
+    },
+    {
+      "id": "100007691",
+      "splitPercentage": "50.0",
+      "isPrimary": false
+    }
+  ],
+
+  "splitBilling": [{
+    "customerAddressId": "192902",
+    "splitPercentage": "100.0"
+  }],
+
+  "lineItems": [
+    {
+      "lineId": "20661113",
+      "projectNumber": "a270U0000004DDkQAM",
+      "sourceItem": "sourceItem? serverName? What makes sense? lineItem.serviceName",
+      "serviceName": "Data Site",
+      "expenditureId": "1421",
+      "productType": "Datasite-Asset Sale",
+      "unitRate": "0",
+      "quantity": "1",
+      "amount": "1",
+      "description": "Data Site",
+      "billToContactName": "Test Test",
+      "shipToContactName": "",
+      "dateReceived": "2017-09-14",
+      "distributions": [
+        {
+          "quantity": "1",
+          "shipDate": "2017-09-14",
+          "locationItems": [
+            {
+              "locationType": "SHIP_FROM",
+              "serviceLocation": "STP"
+            },
+            {
+              "locationType": "ADMIN_DEST",
+              "addressId": "192902"
+            },
+            {
+              "locationType": "SHIP_TO",
+              "addressId": "192902"
+            }
+          ],
+          "taxDetails": []
+        }
+      ]
+    },
+    {
+      "lineId": "20661114",
+      "projectNumber": "a270U0000004DDkQAM",
+      "sourceItem": "sourceItem? serverName? What makes sense? lineItem.serviceName",
+      "serviceName": "PgMinimumFee",
+      "expenditureId": "1421",
+      "productType": "Datasite-Asset Sale",
+      "unitRate": "849",
+      "quantity": "1",
+      "amount": "849",
+      "description": "Monthly Minimum Fee",
+      "billToContactName": "Test Test",
+      "shipToContactName": "Test Test",
+      "dateReceived": "2017-09-14",
+      "distributions": [
+        {
+          "QUESTION": "Will we ever have more than one distribution?",
+          "quantity": "1",
+          "shipDate": "2017-09-14",
+          "locationItems": [
+            {
+              "locationType": "SHIP_FROM",
+              "serviceLocation": "STP"
+            },
+            {
+              "locationType": "ADMIN_DEST",
+              "addressId": "192902"
+            },
+            {
+              "locationType": "SHIP_TO",
+              "addressId": "192902"
+            }
+          ],
+          "taxDetails": [
+            {
+              "jurisdictionLevel": "DISTRICT",
+              "jurisdictionValue": "IDAHO",
+              "taxAmount": "0",
+              "taxRate": "0",
+              "taxableAmount": "849"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "OutputParameters": {
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns": "http://xmlns.oracle.com/apps/hz/rest/xxhz_customer_svc/get_customers/",
+    "X_CUSTOMERS": null,
+    "X_MSG_LIST": null
+  }
+}

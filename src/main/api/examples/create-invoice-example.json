@@ -1,0 +1,245 @@
+{
+  "CREATE_INVOICE_Input": {
+    "InputParameters": {
+      "P_INVOICE": {
+        "SOURCE_SYSTEM": "XXARIA",
+        "SOURCE_INVOICE_NUMBER": "8139364",
+        "PROJECT_SOURCE_SYSTEM": "XXSF",
+        "SOURCE_PROJECT_NUMBER": "a27c0000005RPd2AAG",
+        "INVOICE_DESCRIPTION": "MS Test June 29 3pm",
+        "INVOICE_DATE": "2017-07-06",
+        "CONTACT": "Lori Mahoney",
+        "CUSTOMER_ADDRESS_ID": "24682",
+        "CURRENCY_CODE": "USD",
+        "COUNTRY_OF_ISSUER": "US",
+        "CONTRACT_TERM": "6.0",
+        "INVOICE_SELL_TOTAL": "1715",
+        "INVOICE_LINE_COUNT": "3",
+        "SALESREPS": {
+          "SALESREPS_ITEM": [
+            {
+              "SALESREP_ID": "100010311",
+              "SPLIT_PERCENTAGE": "100.0",
+              "PRIMARY": "Y"
+            }
+          ]
+        },
+        "SPLIT_BILLING": {
+          
+        },
+        "LINES": {
+          "LINES_ITEM": [
+            {
+              "SOURCE_LINE_ID": "15509711",
+              "PROJECT_SOURCE_SYSTEM": "XXSF",
+              "SOURCE_PROJECT_NUMBER": "a27c0000005RPd2AAG",
+              "SOURCE_ITEM": "DataSite",
+              "EXPENDITURE_ORG_ID": "1421",
+              "PRODUCT_TYPE": "Datasite-Asset Purchase",
+              "UNIT_RATE": "0",
+              "QUANTITY": "1",
+              "SELL_AMOUNT": "0",
+              "ITEM_DESCRIPTION": "DataSite",
+              "BILL_TO_CONTACT_NAME": null,
+              "SHIP_TO_CONTACT_NAME": null,
+              "PRODUCTION_DATE_RECEIVED": "2017-07-06",
+              "DISTRIBUTIONS": {
+                "DISTRIBUTIONS_ITEM": [
+                  {
+                    "DIST_LINE_NUMBER": "1",
+                    "DISTRIBUTION_QTY": "1",
+                    "SHIP_DATE": "2017-07-06",
+                    "LOCATIONS": {
+                      "LOCATIONS_ITEM": [
+                        {
+                          "LOCATION_TYPE": "SHIP_FROM",
+                          "SERVICE_LOCATION": "NULL",
+                          "CONTACT_NAME": "NULL",
+                          "COMPANY_NAME": "NULL"
+                        },
+                        {
+                          "LOCATION_TYPE": "ADMIN_DEST",
+                          "CUSTOMER_ADDRESS_ID": "24682",
+                          "CONTACT_NAME": ""
+                        },
+                        {
+                          "LOCATION_TYPE": "SHIP_TO",
+                          "CUSTOMER_ADDRESS_ID": "24682"
+                        }
+                      ]
+                    },
+                    "TAX_DETAILS": {
+                      "TAX_DETAILS_ITEM": [
+                        
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "SOURCE_LINE_ID": "15509712",
+              "PROJECT_SOURCE_SYSTEM": "XXSF",
+              "SOURCE_PROJECT_NUMBER": "a27c0000005RPd2AAG",
+              "SOURCE_ITEM": "PgMinimumFee",
+              "EXPENDITURE_ORG_ID": "1421",
+              "PRODUCT_TYPE": "Datasite-Asset Purchase",
+              "UNIT_RATE": "500",
+              "QUANTITY": "1",
+              "SELL_AMOUNT": "500",
+              "ITEM_DESCRIPTION": "Monthly Minimum Fee",
+              "BILL_TO_CONTACT_NAME": "4576780",
+              "SHIP_TO_CONTACT_NAME": "4576780",
+              "PRODUCTION_DATE_RECEIVED": "2017-07-06",
+              "DISTRIBUTIONS": {
+                "DISTRIBUTIONS_ITEM": [
+                  {
+                    "DIST_LINE_NUMBER": "1",
+                    "DISTRIBUTION_QTY": "1",
+                    "SHIP_DATE": "2017-07-06",
+                    "LOCATIONS": {
+                      "LOCATIONS_ITEM": [
+                        {
+                          "LOCATION_TYPE": "SHIP_FROM",
+                          "SERVICE_LOCATION": "STP",
+                          "CONTACT_NAME": "STP",
+                          "COMPANY_NAME": "STP"
+                        },
+                        {
+                          "LOCATION_TYPE": "ADMIN_DEST",
+                          "CUSTOMER_ADDRESS_ID": "24682",
+                          "CONTACT_NAME": ""
+                        },
+                        {
+                          "LOCATION_TYPE": "SHIP_TO",
+                          "CUSTOMER_ADDRESS_ID": "24682"
+                        }
+                      ]
+                    },
+                    "TAX_DETAILS": {
+                      "TAX_DETAILS_ITEM": [
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "DISTRICT",
+                          "JURISDICTION_VALUE": "FLORIDA",
+                          "TAX_AMOUNT": "0",
+                          "TAX_RATE": "0",
+                          "TAXABLE_AMOUNT": "500",
+                          "TAX_TYPE": "SALES"
+                        },
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "DISTRICT",
+                          "JURISDICTION_VALUE": "PALM BEACH",
+                          "TAX_AMOUNT": "0",
+                          "TAX_RATE": "0",
+                          "TAXABLE_AMOUNT": "500",
+                          "TAX_TYPE": "SALES"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "SOURCE_LINE_ID": "15509713",
+              "PROJECT_SOURCE_SYSTEM": "XXSF",
+              "SOURCE_PROJECT_NUMBER": "a27c0000005RPd2AAG",
+              "SOURCE_ITEM": "Freight Charges",
+              "EXPENDITURE_ORG_ID": "1421",
+              "PRODUCT_TYPE": "Datasite-Asset Purchase",
+              "UNIT_RATE": "1215",
+              "QUANTITY": "1",
+              "SELL_AMOUNT": "1215",
+              "ITEM_DESCRIPTION": "Freight Charges (order # 450844)",
+              "BILL_TO_CONTACT_NAME": "4576780",
+              "SHIP_TO_CONTACT_NAME": "4616752",
+              "PRODUCTION_DATE_RECEIVED": "2017-07-06",
+              "DISTRIBUTIONS": {
+                "DISTRIBUTIONS_ITEM": [
+                  {
+                    "DIST_LINE_NUMBER": "1",
+                    "DISTRIBUTION_QTY": "1",
+                    "SHIP_DATE": "2017-07-06",
+                    "LOCATIONS": {
+                      "LOCATIONS_ITEM": [
+                        {
+                          "LOCATION_TYPE": "SHIP_FROM",
+                          "SERVICE_LOCATION": "LON",
+                          "CONTACT_NAME": "LON",
+                          "COMPANY_NAME": "LON"
+                        },
+                        {
+                          "LOCATION_TYPE": "ADMIN_DEST",
+                          "CUSTOMER_ADDRESS_ID": "24682",
+                          "CONTACT_NAME": ""
+                        },
+                        {
+                          "LOCATION_TYPE": "SHIP_TO",
+                          "CUSTOMER_ADDRESS_ID": "",
+                          "CONTACT_NAME": "George Jetson",
+                          "COMPANY_NAME": "BE Aerospace, Inc.",
+                          "ADDRESS1": "1 Space Drive",
+                          "ADDRESS2": null,
+                          "ADDRESS3": null,
+                          "ADDRESS4": "",
+                          "CITY": "St Paul",
+                          "COUNTY": "",
+                          "STATE": "MN",
+                          "POSTAL_CODE": "55108",
+                          "PROVINCE": "",
+                          "COUNTRY": "US"
+                        }
+                      ]
+                    },
+                    "TAX_DETAILS": {
+                      "TAX_DETAILS_ITEM": [
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "DISTRICT",
+                          "JURISDICTION_VALUE": "TRANSIT TAX AREA",
+                          "TAX_AMOUNT": "3.04",
+                          "TAX_RATE": "0.0025",
+                          "TAXABLE_AMOUNT": "1215",
+                          "TAX_TYPE": "SALES"
+                        },
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "DISTRICT",
+                          "JURISDICTION_VALUE": "UNITED KINGDOM",
+                          "TAX_AMOUNT": "0",
+                          "TAX_RATE": "0",
+                          "TAXABLE_AMOUNT": "1215",
+                          "TAX_TYPE": "SALES"
+                        },
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "STATE",
+                          "JURISDICTION_VALUE": "MINNESOTA",
+                          "TAX_AMOUNT": "83.53",
+                          "TAX_RATE": "0.06875",
+                          "TAXABLE_AMOUNT": "1215",
+                          "TAX_TYPE": "SALES"
+                        },
+                        {
+                          "SITUS": "DESTINATION",
+                          "JURISDICTION_LEVEL": "CITY",
+                          "JURISDICTION_VALUE": "SAINT PAUL",
+                          "TAX_AMOUNT": "6.07",
+                          "TAX_RATE": "0.005",
+                          "TAXABLE_AMOUNT": "1215",
+                          "TAX_TYPE": "SALES"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

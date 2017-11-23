@@ -1,0 +1,313 @@
+#%RAML 1.0
+title: sys-oracle
+version: 1.0
+baseUri: http://127.0.0.1/api/{version}
+documentation:
+  - title: Home
+    content: |
+      This is the system layer in front of Oracle and will be responsible calling the raw Oracle API.
+description: |
+      This API will be provide easy access to the Oracle API and be responsible for breaking down the responses to usable items for the proc layer, as well as reliably posting objects into Oracle
+protocols: HTTPS
+mediaType: application/json
+/oracle:
+  /healthcheck:
+    displayName: Oracle-Health-Check
+    description: This Endpoint is Utilized for Ensuring a Connection to the Oracle API
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: {Status: "Oracle Connection is Available"}
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /auth:
+    displayName: Oracle-Auth
+    description: Call to get access token for Oracle
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/oracle-auth-response.xml
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /oracle-account:
+    displayName: Oracle-Account-Details
+    description: Call to get accounts updated since the last call from Oracle. The "last call" is stored in Oracle and not passed in as an argument from the API.
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: {}
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /expenditure:
+    displayName: Expenditure-In-Oracle
+    description: Call to retrieve expenditure in Oracle
+    get:
+      queryParameters:
+        serviceSite:
+        businessUnit:
+        teamType:
+      responses:
+        200:
+          body:
+            application/json:
+              example: {"expenditureId": 1421}
+        404:
+          body:
+            application/json:
+              example: {"message": "Expenditure Not Found"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /create-invoice:
+    displayName: Create-Invoice-In-Oracle
+    description: Call to create Invoice in Oracle
+    post:
+      body:
+        application/json:
+          example: !include examples/create-invoice-example.json
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/invoice_create_E_response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /void-invoice:
+    displayName: Void-Invoice-In-Oracle
+    description: Call to void Invoice in Oracle
+    get:
+      queryParameters:
+        originalVoidNumber:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/invoice_void_E_response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /create-credit-memo:
+    displayName: Create-Credit-Memo-In-Oracle
+    description: Call to create Credit Memo in Oracle
+    get:
+      queryParameters:
+        originalInvoiceNumber:
+        originalCMNumber:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/invoice_creditmemo_E_response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /void-credit-memo:
+    displayName: Void-Credit-Memo-In-Oracle
+    description: Call to void Credit Memo in Oracle
+    get:
+      queryParameters:
+        originalInvoiceNumber:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/void_creditmemo_E_response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /mapping-table-lookup:
+    displayName: Invoice-Mapping-Table-Lookup-In-Oracle
+    description: Call to lookup Invoice mapping table in Oracle
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/oracle-invoice-mapping-result.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /template-lookup:
+    displayName: Invoice-Template-Lookup-In-Oracle
+    description: Call to lookup Invoice template in Oracle
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/oracle-invoice-template-mapping-result.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /store-invoice:
+    displayName: Store-Final-Invoive-In-Oracle
+    description: Call to store final Invoice in Oracle
+    post:
+      body:
+        application/json:
+          example: {}
+      responses:
+        200:
+          body:
+            application/json:
+              example: {}
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /org-lookup:
+    displayName: Project-Org-Lookup-In-Oracle
+    description: Call to find Project Org Id in Oracle
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: {"projectOrgId": "763"}
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /salesrep-lookup:
+    displayName: Salesrep-Lookup-In-Oracle
+    description: Call to find Salesrep in Oracle
+    get:
+      queryParameters:
+        operationId:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/salesrep_response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /project-create:
+    displayName: Project-Create-In-Oracle
+    description: Call to create new project in Oracle
+    post:
+      body:
+        application/json:
+          example: !include examples/oracle_create_project_request.json
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/oracle-create-project-successful-response.json
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /project-update:
+    displayName: Project-Update-In-Oracle
+    description: Call to update existing project in Oracle
+    post:
+      body:
+        application/json:
+          example: {}
+      responses:
+        200:
+          body:
+            application/json:
+              example: {}
+        400:
+          body:
+            application/json:
+              example: {"Status": "Oracle Connection Not Available"}
+        500:
+          body:
+            application/json:
+              example: {Status: "Internal Server Error"}
+  /monthly-usage:
+    displayName: Send-Monthly-Usage-To-Oracle
+    description: Call to send monthly usage data to Oracle
+    post:
+      body:
+        application/json:
+          example: !include examples/mothly_usage_request.json
+      responses:
+        200:
+          body:
+            application/json:
+              example: { "success": true, "message": "Successfully completed Expenditure Items: 2" }
+        400:
+          body:
+            application/json:
+              example: { "success": false, "error": "Duplicate Expenditure Item" }
+        500:
+          body:
+            application/json:
+              example: { "success": false }

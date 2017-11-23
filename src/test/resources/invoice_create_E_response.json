@@ -1,0 +1,47 @@
+{
+  "OutputParameters" : {
+    "@xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns" : "http://xmlns.oracle.com/apps/ar/rest/xxbs_invoice_svc/create_invoice/",
+    "P_RESULTS" : {
+      "TRX_NUMBER" : {
+        "@xsi:nil" : "true"
+      },
+      "STATUS" : "E",
+      "MESSAGES" : {
+        "MESSAGES_ITEM" : [ {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "106",
+          "ENTITY" : "INVOICE",
+          "KEY_MAPPING" : "InvNum",
+          "KEY_VALUES" : "8139364",
+          "INVALID_VALUE" : "8139364",
+          "MESSAGE" : "Invoice Number exists in Billing System"
+        }, {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "107",
+          "ENTITY" : "INVOICE",
+          "KEY_MAPPING" : "InvNum",
+          "KEY_VALUES" : "8139364",
+          "INVALID_VALUE" : "8139364",
+          "MESSAGE" : "Invoice Number exists in Receivables"
+        }, {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "100",
+          "ENTITY" : "INVOICE",
+          "KEY_MAPPING" : "InvNum",
+          "KEY_VALUES" : "8139364",
+          "INVALID_VALUE" : "06-JUL-2017",
+          "MESSAGE" : "AR Period Is Not Open"
+        }, {
+          "SEVERITY_LEVEL" : "ERR",
+          "CODE" : "101",
+          "ENTITY" : "INVOICE",
+          "KEY_MAPPING" : "InvNum",
+          "KEY_VALUES" : "8139364",
+          "INVALID_VALUE" : "06-JUL-2017",
+          "MESSAGE" : "Billing Period Is Not Open"
+        } ]
+      }
+    }
+  }
+}

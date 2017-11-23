@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mock="http://www.mulesoft.org/schema/mule/mock" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd">
+    <munit:config name="munit" doc:name="MUnit configuration"/>
+    <spring:beans>
+        <spring:import resource="classpath:invoice-create-creditmemo.xml"/>
+        <spring:import resource="classpath:globals.xml"/>
+        <spring:import resource="classpath:auth.xml"/>
+        <spring:import resource="classpath:error-handling.xml"/>
+    </spring:beans>
+    <munit:test name="invoiceCreateCreditMemoTest" description="Test">
+        <mock:when messageProcessor="mule:flow" doc:name="Mock Auth">
+            <mock:with-attributes>
+                <mock:with-attribute name="name" whereValue="getAuth"/>
+            </mock:with-attributes>
+            <mock:then-return payload="" mimeType="application/xml"/>
+        </mock:when>
+        <mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:then-return payload="#[getResource('invoice_creditmemo_E_response.json').asString()]" mimeType="application/json"/>
+        </mock:when>
+        <munit:set payload="#[getResource('invoice_creditmemo_request.json').asString()]" mimeType="application/json" doc:name="Set Message"/>
+        <flow-ref name="invoiceCreateCreditMemoFlow" doc:name="Flow-ref to invoiceCreateCreditMemoFlow"/>
+        <munit:assert-on-equals expectedValue="E" actualValue="#[flowVars.extractMsg]" doc:name="Assert Equals"/>
+    </munit:test>
+</mule>

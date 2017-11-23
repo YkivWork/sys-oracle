@@ -1,0 +1,20 @@
+{
+  "usages": [
+    {
+      "expenditureId": "1421",
+      "transactionDate": "2017 - 09 - 05",
+      "usageBillingType": "docProcessed",
+      "lineId": "a27c0000005ywr5AAA | 2017 - 09 - 05 | docProcessed",
+      "quantity": "2611",
+      "sfdcProjectId": "a27c0000005ywr5AAA"
+    },
+    {
+      "expenditureId": "1421",
+      "transactionDate": "2017 - 09 - 05",
+      "usageBillingType": "downloadOnly",
+      "lineId": "a27c0000005ywr5AAA | 2017 - 09 - 05 | downloadOnly",
+      "quantity": "2.0448",
+      "sfdcProjectId": "a27c0000005ywr5AAA"
+    }
+  ]
+}
